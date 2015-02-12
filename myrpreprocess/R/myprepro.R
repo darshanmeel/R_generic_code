@@ -1,3 +1,14 @@
+#move class col in the end
+moveclasscolintheend <- function(X,clscolpos)
+{
+  cols <- colnames(X)
+  X <- cbind(X[,-clscolpos],X[,clscolpos])
+  cols <- c(cols[-clscolpos],cols[clscolpos])
+  colnames(X) <- cols
+  clscolpos <- ncol(X)
+  X[,clscolpos] <- as.factor(X[,clscolpos] )
+  X
+}
 #'findclasstypeofeach columns
 #'colclasses <- findclassofcolumns(X)
 findclassofcolumns <- function(X)
@@ -66,6 +77,7 @@ relevelfactorcols <- function(X)
 findunusualdata <- function(X,cutoff= 0.0001,clscol='Class')
 {
   cols <- colnames(X)
+  clscolpos <- match(clscol,cols)
 
   factorcols <- findallfactorcols(X)
   for (cl in factorcols)
@@ -82,8 +94,9 @@ findunusualdata <- function(X,cutoff= 0.0001,clscol='Class')
       print (tbl)
       if (length(clscol) > 0)
       {
+        print(clscolpos)
         print ("table output with classinfo")
-        print (table(X[,cl],X[,clscol]))
+        print (table(X[,cl],X[,clscolpos]))
       }
       print (paste("Unusual data for column",cols[cl],'ends'))
       print("")
