@@ -171,3 +171,35 @@ findcorrelation <- function(X){
   X<- cor(X)
   X
 }
+# remove all the columns with more than certain level of factors
+removefactcolwithhighnumoflevels <- function(X,maxlvl=60)
+{
+
+  factcols <- findallfactorcols(X)
+  cols <- lapply(factcols,function(clpos) ifelse(length(levels(X[,clpos])) > maxlvl,TRUE,FALSE))
+
+  cols <- as.vector(unlist(cols))
+
+  remcols <- factcols[cols]
+  keepcols <- factcols[!cols]
+
+  list(remcols=remcols,keepcols=keepcols)
+}
+
+#find possible candidate of int and numeric cols which can be converted to factors. e.g columns which has just few
+# distinct values
+
+findnumcolswhicharecandidateforfactcols <- function(X,maxdistinctvalues = 100)
+{
+  cols <- colnames(X)
+  X <- convertinttonum(X)
+  numcols <- findallnumcols(X)
+
+  X <- convertnumtofact(X)
+
+  ab <- removefactcolwithhighnumoflevels(X,maxlvl=maxdistinctvalues)
+
+  print(ab$keepcols)
+  possiblecandidates <- intersect(numcols,ab$keepcols)
+  cols[possiblecandidates]
+}

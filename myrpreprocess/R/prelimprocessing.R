@@ -1,4 +1,4 @@
-prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovieweachinput=5,generategraphs=TRUE,remmissingdatabeforeprocessing=FALSE)
+prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovieweachinput=5,generategraphs=TRUE,remmissingdatabeforeprocessing=FALSE,maxlvl=60)
 {
   #remove any misisng columns
   com_mis <- findmissingdata(X)
@@ -21,15 +21,23 @@ prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovie
   #if there is a class col put it at the end of the data frame
   cols <- colnames(X)
   clscolpos <- match(clscol,cols)
-
   if (clscolpos >  0){
     X <- moveclasscolintheend(X,clscolpos)
     print(table(X[,clscolpos]))
-
     Sys.sleep(timetovieweachinput)
   }
+  # make all char cols to fact cols
+  X <- convertchartofact(X)
 
+  #Now remove all those columns from the data which has more than 60 factors.
+  rmcls <- removefactcolwithhighnumoflevels(X,maxlvl=maxlvl)
+  print("removing columns with very high levels list of columns is given below")
+  print (rmcls$remcols)
 
+  X[,remcols] <- as.data.frame(c(NULL))
+
+  print(paste("columns which could be converted to fctors columns",findnumcolswhicharecandidateforfactcols(X,maxdistinctvalues = maxlvl)))
+  Sys.sleep(timetovieweachinput)
   # There are some int columns change them to numeric. This to make few things easier down the line
   # integer calcualtion can be faster and if you do not need it then dont change it.
   if (inttonum)
@@ -45,9 +53,11 @@ prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovie
   print (head(cor1,resrows))
   Sys.sleep(timetovieweachinput)
 
+  #remove all the factcols which has
   #For all the factor columns check if one of level is too much underrepresented in the data. Cutoff is how much
   # it should be of total data.
-  #If you want you can remove the data
+  #If you want you can remove the data. This data can be quite large.
+
   findunusualdata(X,cutoff=0.0005,clscol=clscol)
 
   Sys.sleep(timetovieweachinput)
