@@ -11,6 +11,7 @@ train_and_predict_log_reg_and_ret_auc <- function(frml1,train,test,clscolpos=NUL
   }
   tf <- train_and_predict_log_reg(frml1,train,test,...)
   roc_of_models(tf$test,clscolpos)
+  #retun model, test data and train data so that you can reduce the size of the moel if needed.
   list(tf)
 }
 

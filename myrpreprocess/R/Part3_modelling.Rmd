@@ -22,9 +22,11 @@ test_data <- read.csv('fs_test_data.csv')
 valid_data <- read.csv('fs_validdata.csv')
 
 
-# Now remove the test and valid data
+# Now you can apply any model . For this taks an djust to show importance of interaction terms i ill be using log reg
 
-
+# I am not running any model excet the Logistic regression. I had ran plain random forest and I got around 0.82 AUC with just 500 trees without. 
+# This is just to show how interaction terms can be used in the model like regressions. However these interaction columns can give more details
+# like 
 # Let us model a normal logistic regression. Check the performance on valid_dt and if needed calibrate parameters. 
 # Once model is ready try finally on test_data. Also, do not change anything after that even that is bad. If test performance is bad. Regenerate the train, test and valid and try samething over and again.
 
