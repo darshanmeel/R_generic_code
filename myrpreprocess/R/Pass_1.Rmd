@@ -12,17 +12,19 @@ library(randomForest)
 library(ROCR)
 library(myrpreprocess)
 library(unbalanced)
-filename <- '/Users/dsing001/Downloads/CST.csv'
+# Select any file name and class column
+filename <- 'CST.csv'
 header <- TRUE
 filename
+
+clscol='SeriousDlqin2yrs'
 
 #run prelim processing
 X <- read.csv(file=filename,header=header)
 
 #it might not work with all of data. I have tried with many things and it worked. But you miight need to make some changes.
 
-prelimprocessing(X,clscol='SeriousDlqin2yrs',timetovieweachinput=1)
-
+prelimprocessing(X,clscol=clscol,timetovieweachinput=1)
 
 ```
 

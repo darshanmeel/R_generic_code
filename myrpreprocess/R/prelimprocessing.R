@@ -1,4 +1,25 @@
-prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovieweachinput=5,generategraphs=TRUE,remmissingdatabeforeprocessing=FALSE,maxlvl=60)
+# I HAVE GIVEN LONG NAMES SO THAT I CAN LOOK AT METHOD AND KNOW WHAT IT IS.IN PROD CODE YOU WONT HAVE THIS MUCH LONG NAMES
+# RATHER YOU CAN CUT THESE A BIT SORT :)
+
+# DO NOT USE ANY OF THESE METHODS DIRECTLY AS IT EXPECT OUTPUTS TO BE IN CERTAIN FORMAT.
+
+# This is a quite generic method. Use this to have a peak at your data and how it looks like. It does a lots of stuff.
+
+# 1. It finds all the missing data in DF as well as in each column
+# 2. Return the str,summary and head outputs.
+# 3. It suggests numeric oclumns which could be converted to factor columns.
+# 4. Find correlation between numeric data
+# 5. Find unusual data e.g. in a factor column one or more values are negligible as compared to others.
+# 6. It then plots the graphs for individual columns and then for a all possible pair of columns.
+# 7. Before generating the graphs it samples the data so that max rows are 10000 as plotting too much data will be time consuming
+# thus the graphs will not be based on full data but a sample of the data but these will give you an idea how your data looks like.
+# 8. quick chi square is not a feature selection method but it will provide you whether the data is quite imbalanced across classes
+# for fatcor columns.
+# Once you are done with this then you can fix some data and run the feature selection as part of featureselections.
+# Fianlly you do your modelling and see how your data looks like.
+
+
+prelimprocessing <- function(X,resrows=2,inttonum=TRUE,clscol='Class',timetovieweachinput=5,generategraphs=TRUE,remmissingdatabeforeprocessing=FALSE,maxlvl=60,cutoff=0.001)
 {
   #remove any misisng columns
   com_mis <- findmissingdata(X)
@@ -58,10 +79,13 @@ prelimprocessing <- function(X,resrows=10,inttonum=TRUE,clscol='Class',timetovie
   # it should be of total data.
   #If you want you can remove the data. This data can be quite large.
 
-  findunusualdata(X,cutoff=0.0005,clscol=clscol)
+  findunusualdata(X,cutoff=cutoff,clscol=clscol)
 
   Sys.sleep(timetovieweachinput)
 
+  # call a chi square kidn of stuff to see how the data is in fatcor columns across classes.
+  quickchisquare(X)
+  Sys.sleep(timetovieweachinput)
   #Use startified splitting. Use just 5000 rows for graphs as too much data will cause issues
   test_ratio <- 10000.0/nrow(X)
   test_ratio <- ifelse(test_ratio>0.9,0.9,test_ratio)

@@ -1,3 +1,14 @@
+# I HAVE GIVEN LONG NAMES SO THAT I CAN LOOK AT METHOD AND KNOW WHAT IT IS.IN PROD CODE YOU WONT HAVE THIS MUCH LONG NAMES
+# RATHER YOU CAN CUT THESE A BIT SORT :)
+
+# DO NOT USE ANY OF THESE METHODS DIRECTLY AS IT EXPECT OUTPUTS TO BE IN CERTAIN FORMAT.
+
+# This is quite useful in the machine learning especially when you are doing analysis on your data like feature selection
+# or want to see how a model fit on data without using CV.
+# If valid_ratio is provided it returns the validation set which you should always have to claibrate your model. Once you are happy
+# test it on test_data and then you can have k fold validation as well.
+
+#valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
 generte_train_test_validset <- function(X,test_ratio= 0.3,valid_ratio= NULL)
 {
   # split the data in test and train
@@ -21,6 +32,7 @@ generte_train_test_validset <- function(X,test_ratio= 0.3,valid_ratio= NULL)
   list(train_data=train_data,valid_data=valid_dt,test_data=test_data)
 }
 
+# This split the data randomly and return the test_ratio as test_index and other one as train_index
 shufflesplit <- function(X,test_ratio=0.3)
 {
   nrows <- nrow(X)
@@ -40,6 +52,7 @@ shufflesplit <- function(X,test_ratio=0.3)
 }
 
 
+# This is stratified sampling and will be based on the class column and it consider last column as class column.
 stratifiedshufflesplit <-  function (X,test_ratio=0.3)
 {
   nrows <- nrow(X)

@@ -1,0 +1,59 @@
+---
+output: word_document
+---
+```{r}
+#load the csv file and provide the name as lv
+
+#loadrequiredlibrariesforpreprocessing(TRUE)
+
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+# Select any file name and class column
+filename <- 'CST.csv'
+header <- TRUE
+filename
+
+clscol='SeriousDlqin2yrs'
+
+#run prelim processing
+X <- read.csv(file=filename,header=header)
+
+#Now fix all the issues you want to with your data which you might have got idea from Pass_1 as well as from your own analytics.
+
+# Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
+#valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
+dt_set <- generte_train_test_validset(X,train_ratio=0.3,valid_ratio=0.3)
+train_data <- dt_set$train_data
+test_data <- dt_set$test_data
+valid_data <- dt_set$valid_data
+
+#write the train_data,test_data and valid_data now to file. Use this in 3rd step of modelling.
+#however, you can split them again but make sure that the feature selection part is run once or if you want to repeat it on same data
+#to be honest :) .
+
+write.csv(train_data,'fs_train_data.csv',row.names=FALSE)
+write.csv(train_data,'fs_test_data.csv',row.names=FALSE)
+write.csv(train_data,'fs_validdata.csv',row.names=FALSE)
+
+# Now remove the test and valid data
+
+rm(valid_data)
+rm(test_data)
+rm(X)
+
+# Now run the pass 2 and you will see which features to use.
+# Here k means how many parameters to bring
+# ranking means what ranking to use for random forest. You can pass random forest parameters as well.
+findusefulfeatures(X,alpha = 0.05,ranking='accuracy',k=20)
+# Did you find features for your model yet . 
+# Yes great!!!!!!
+# No.  This is why companies need you it is not so easy . Look into those graphs
+# Analyse the data again and look at minor details and reiterate this process unless you get it right.
+
+# I fyou find better method than this let me know. 
+```
+
