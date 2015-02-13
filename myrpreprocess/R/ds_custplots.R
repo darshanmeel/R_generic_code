@@ -5,7 +5,7 @@
 
 # Here it will take a Data frame and will plot the density diagram(for continous) or bar chart (for factor columns.)
 myindividualplot <- function(df,clscol = 'Class',timetovieweachinput=0){
-
+  print ("now generating the first set of plots i.e. individual plots for each column")
   factcols <- findallfactorcols(df)
   nc <- ncol(df)
   colclasses <- c(rep(FALSE,nc))
@@ -23,11 +23,13 @@ myindividualplot <- function(df,clscol = 'Class',timetovieweachinput=0){
     print(g)
     Sys.sleep(timetovieweachinput)
   }
+  print ("finished generating the first set of plots i.e. individual plots for each column")
 }
 
 #Here we will generate the graphs between 2 columns of same data frame to see how data is related. It is a longer and customized
 #version of plot function in R.
 mymultplot <- function(df,clscol = 'Class',timetovieweachinput=2){
+  print ("now generating the second set of plots i.e.  plots for a pair of columns")
   colclasses <- findclassofcolumns(df)
   nc <- ncol(df)
   dfcolnames <- colnames(df)
@@ -45,11 +47,12 @@ mymultplot <- function(df,clscol = 'Class',timetovieweachinput=2){
       #1. Generate Scatter graph between 2 continous variables. If class is provided use color of class column
       #2. Generate a box plot between a continous and factor column and use  color if class is provided.
       #3. If bothe columns are factor then use facet wrap for y column and use  color if class is provided
-      g <- mult_plots_ggplot_scatter(df,x,y,clscol,isxfactor,isyfactor,ttl,cf=NULL)
+      g <- mult_plots_ggplot_scatter(df,x,y,clscol,isxfactor,isyfactor)
       print(g)
       Sys.sleep(timetovieweachinput)
     }
   }
+  print ("finished generating the second set of plots i.e.  plots for a pair of columns")
 }
 
 
@@ -63,7 +66,7 @@ mymultplot <- function(df,clscol = 'Class',timetovieweachinput=2){
 #4. This is our new data frame and plot individual as well as cross plots and that is why we will have too any graphs.
 
 mymultplotbyfactcol <- function(df,clscol = 'Class',timetovieweachinput=2){
-
+  print ("start generating the third set of plots i.e.  plots for a pair of columns but for a subste of data based on the value of factor columns")
   factcols <- findallfactorcols(df)
   nc <- ncol(df)
   colclasses <- findclassofcolumns(df)
@@ -85,11 +88,12 @@ mymultplotbyfactcol <- function(df,clscol = 'Class',timetovieweachinput=2){
     }
 
   }
+  print ("finished generating the third set of plots i.e.  plots for a pair of columns but for a subste of data based on the value of factor columns")
 }
 
 #generate all of above 3 kind or one of those graphs
 
-plotvariousgraphs <- function(X,individualplots=FALSE,crossplot=FALSE,byfactcols=FALSE,plotall=FALSE,clscol='Class',,timetovieweachinput=2))
+plotvariousgraphs <- function(X,individualplots=FALSE,crossplot=FALSE,byfactcols=FALSE,plotall=FALSE,clscol='Class',timetovieweachinput=2)
 {
   cols <- colnames(X)
   classcolpos <- match(clscol,colnames(X))
@@ -102,14 +106,18 @@ plotvariousgraphs <- function(X,individualplots=FALSE,crossplot=FALSE,byfactcols
     byfactcols=TRUE
   }
   if (individualplots){
+
     myindividualplot(X,clscol=clscol,timetovieweachinput=timetovieweachinput)
+
   }
 
 
-  # Generate scatter plot of all the continous columns against each other and if class is give use that but now have one graph each for a level
+  #
   #run below if you have small number of columns otherwise it will run for too long.
   if (crossplot){
+
     mymultplot(X,clscol=clscol,timetovieweachinput=timetovieweachinput)
+
   }
 
   # Here we will generate graph for each numric columns with each other.But the data will be not full data frame but rather

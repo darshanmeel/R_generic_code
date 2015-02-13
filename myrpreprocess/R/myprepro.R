@@ -8,8 +8,12 @@
 moveclasscolintheend <- function(X,clscolpos)
 {
   cols <- colnames(X)
-  X <- cbind(X[,-clscolpos],X[,clscolpos])
-  cols <- c(cols[-clscolpos],cols[clscolpos])
+  clscolname <- cols[clscolpos]
+  cls <- X[,clscolpos]
+  X[,clscolpos] <- as.data.frame(c(NULL))
+  cols <- colnames(X)
+  cols <- append(cols,clscolname)
+  X <- cbind(X,cls)
   colnames(X) <- cols
   clscolpos <- ncol(X)
   X[,clscolpos] <- as.factor(X[,clscolpos] )
@@ -204,8 +208,7 @@ findnumcolswhicharecandidateforfactcols <- function(X,maxdistinctvalues = 100)
   X <- convertinttonum(X)
   numcols <- findallnumcols(X)
   X <- convertnumtofact(X)
-  ab <- removefactcolwithhighnumoflevels(X,maxlvl=maxdistinctvalues)
-  print(ab$keepcols)
+  ab <- factcolwithhighnumoflevels(X,maxlvl=maxdistinctvalues)
   possiblecandidates <- intersect(numcols,ab$keepcols)
   cols[possiblecandidates]
 }

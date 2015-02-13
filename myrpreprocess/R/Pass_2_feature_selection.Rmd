@@ -5,7 +5,7 @@ output: word_document
 #load the csv file and provide the name as lv
 
 #loadrequiredlibrariesforpreprocessing(TRUE)
-
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
 library(ggplot2)
 library(discretization)
 library(randomForest)
@@ -21,12 +21,16 @@ clscol='SeriousDlqin2yrs'
 
 #run prelim processing
 X <- read.csv(file=filename,header=header)
+clscolpos <- match(clscol,colnames(X))
+X <- X[complete.cases(X),]
+X <- moveclasscolintheend(X,clscolpos)
+X[,clscol] <- as.factor(X[,clscol])
 
 #Now fix all the issues you want to with your data which you might have got idea from Pass_1 as well as from your own analytics.
 
 # Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
 #valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
-dt_set <- generte_train_test_validset(X,train_ratio=0.3,valid_ratio=0.3)
+dt_set <- generte_train_test_validset(X,test_ratio=0.3,valid_ratio=0.3)
 train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
@@ -44,11 +48,11 @@ write.csv(train_data,'fs_validdata.csv',row.names=FALSE)
 rm(valid_data)
 rm(test_data)
 rm(X)
-
+frml1 <- 'SeriousDlqin2yrs ~ .'
 # Now run the pass 2 and you will see which features to use.
 # Here k means how many parameters to bring
 # ranking means what ranking to use for random forest. You can pass random forest parameters as well.
-findusefulfeatures(X,alpha = 0.05,ranking='accuracy',k=20)
+findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
 # Did you find features for your model yet . 
 # Yes great!!!!!!
 # No.  This is why companies need you it is not so easy . Look into those graphs

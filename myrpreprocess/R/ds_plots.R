@@ -11,7 +11,6 @@ IndividualPlots <- function(df,x,col=NULL,isxfactor=FALSE){
       g <- ggplot(df, aes_string(x=x, fill=col)) + geom_density(alpha=.3)
       ttl <- paste('Density graph for column\n',x)
       g <- g + ggtitle(ttl)
-    }
   }
   else
   {

@@ -11,13 +11,14 @@ train_and_predict_log_reg_and_ret_auc <- function(frml1,train,test,clscolpos=NUL
   }
   tf <- train_and_predict_log_reg(frml1,train,test,...)
   roc_of_models(tf$test,clscolpos)
+  list(tf)
 }
 
-train_and_predict_log_reg <- function(frml1,train,test,predict_type,...)
+train_and_predict_log_reg <- function(frml1,train,test,predict_type='response',...)
 {
   mdl <- train_log_reg(frml1,train,...)
   tst <- predict_log_reg(mdl$model,test,predict_type)
-  list(test=tst$test,model=lm1,train=train)
+  list(test=tst$test,model=mdl,train=train)
 }
 #This method will train the log reg
 train_log_reg <- function(frml1,train,...)

@@ -122,16 +122,21 @@ quickchisquare <- function(X)
 {
   #find all the factor cols
   factcols <- findallfactorcols(X)
-
   cls <- X[,ncol(X)]
+  print (factcols)
   X <- X[,factcols]
   cols <- colnames(X)
   tbl <- table(cls)
   overall_ratio <- as.vector(tbl/sum(tbl))
   print ('overall ratio')
   print(overall_ratio)
+  nc <-length(factcols)
 
   for (i in 1:length(factcols)){
+    if (nc<= 1){
+      print ("there are no fact columns except class column")
+      break
+    }
 
     print (paste('ratio for column',cols[i]))
     dt <- X[,i]

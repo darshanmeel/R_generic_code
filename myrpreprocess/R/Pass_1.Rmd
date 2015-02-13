@@ -5,7 +5,7 @@ output: word_document
 #load the csv file and provide the name as lv
 
 #loadrequiredlibrariesforpreprocessing(TRUE)
-
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
 library(ggplot2)
 library(discretization)
 library(randomForest)
@@ -24,7 +24,7 @@ X <- read.csv(file=filename,header=header)
 
 #it might not work with all of data. I have tried with many things and it worked. But you miight need to make some changes.
 
-prelimprocessing(X,clscol=clscol,timetovieweachinput=1)
+prelimprocessing(X,clscol=NULL,timetovieweachinput=2,remmissingdatabeforeprocessing=TRUE)
 
 ```
 

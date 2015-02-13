@@ -6,27 +6,29 @@
 #As this is a supervised method I am assuming thta you have class/response column.
 # Here k means how many parameters to bring
 # ranking means what ranking to use for random forest. You can pass random forest parameters as well.
-findusefulfeatures <- function(X,alpha=0.05,ranking='accuracy',k=20...)
+findusefulfeatures <- function(X,alpha=0.05,ranking='accuracy',k=20,frml1,...)
 {
-
+  k <- ifelse(ncol(X) < k,ncol(X),k)
   # Do a chisquare independece test
   ci <- checkindependenceofdata(X,alpha=alpha)
   colpvals <- ci$colpvals
   print (colpvals)
   # Do a random forest
-  rf <- rf_feature_selection (X,frml,k=k,ranking=ranking,...)
+  rf <- rf_feature_selection (X,as.formula(frml1),k=k,ranking=ranking,...)
   print (paste('top ranked features based on random forest',ranking))
   print(rf$feature_rank)
   # Thius might generate huge data so you might not want to use it.
   #print(rf$imp_ordered)
-  print ("now rankinsg based in logistic regression")
+  print ("now rankinsg based on logistic regression. This is custom log reg")
 
   lr <- lr_feature_selection(X)
   singlecols <- lr$singlecols
   print ("importance of single columns")
-  singlecols <- singlecols[order(singelcols[,2]),]
-  print(singlecols[1:k,])
+  #singlecols <- singlecols[order(singlecols[,2]),]
+  print(singlecols)
   interactioncols <- lr$interactioncols
   interactioncols <- interactioncols[order(interactioncols[,5]),]
-  print(interactioncols[1:k,])
+  print(interactioncols)
+
+
 }
