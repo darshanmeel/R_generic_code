@@ -129,9 +129,10 @@ colnames(train_data ) <- cols
 colnames(test_data ) <- cols
 colnames(valid_data ) <- cols
 clspos <- ncol(train_data)
-#write.csv(train_data,'fs_train_data.csv',row.names=FALSE,quote=TRUE)
-#write.csv(train_data,'fs_test_data.csv',row.names=FALSE,quote=TRUE)
-#write.csv(train_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
+
+write.csv(train_data,'fs_train_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(train_data,'fs_test_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(train_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
 
 #Generate graph. It might take long time s there are 120 columns and thus could belots of graphs
 

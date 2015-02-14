@@ -10,9 +10,9 @@ train_and_predict_log_reg_and_ret_auc <- function(frml1,train,test,clscolpos=NUL
     clscolpos <- ncol(test)
   }
   tf <- train_and_predict_log_reg(frml1,train,test,...)
-  roc_of_models(tf$test,clscolpos)
+  auc <- roc_of_models(tf$test,clscolpos)
   #retun model, test data and train data so that you can reduce the size of the moel if needed.
-  list(tf)
+  list(tf,auc)
 }
 
 train_and_predict_log_reg <- function(frml1,train,test,predict_type='response',...)
@@ -45,15 +45,15 @@ roc_of_models <- function(test,clscolpos)
       stop("More than 2 levels.ROC works with only 2 levels")
     }
     pred <- prediction(test[,(clscolpos+1)], test[,clscolpos])
-    perf1 <- performance(pred, "prec", "rec")
-    plot(perf1)
-    perf1 <- performance(pred, "sens", "spec")
-    plot(perf1)
+    #perf1 <- performance(pred, "prec", "rec")
+    #plot(perf1)
+    #perf1 <- performance(pred, "sens", "spec")
+    #plot(perf1)
     auc <- performance(pred,"auc")
     auc <- unlist(slot(auc, "y.values"))
     print (auc)
-    perf <- performance(pred,"tpr","fpr")
-    plot(perf)
+    #perf <- performance(pred,"tpr","fpr")
+    #plot(perf)
     list(auc=auc)
 }
 
@@ -61,7 +61,7 @@ train_rf <- function(frml1,train,test,...)
 {
   rf <- randomForest(frml1,train,importance=TRUE,...)
   test$predprob <- predict(rf,test,type='prob')[,2]
-  test
+  list(test=test)
 }
 #
 train_and_predict_random_forest_and_ret_auc <- function(frml1,train,test,clscolpos=NULL,...)

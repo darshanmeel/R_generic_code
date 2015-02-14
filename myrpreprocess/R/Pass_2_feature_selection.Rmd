@@ -52,7 +52,7 @@ frml1 <- 'SeriousDlqin2yrs ~ .'
 # Now run the pass 2 and you will see which features to use.
 # Here k means how many parameters to bring
 # ranking means what ranking to use for random forest. You can pass random forest parameters as well.
-findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
+#findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
 # Did you find features for your model yet . 
 # Yes great!!!!!!
 # No.  This is why companies need you it is not so easy . Look into those graphs
