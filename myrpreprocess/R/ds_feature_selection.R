@@ -24,8 +24,12 @@
 # when we will have large data and large number of columns but for smaller data set and lesser columns it is quite posisble.Especially, if you
 #run on a cluster where you actauuly ruyn different set of formula on different machine
 
-lr_feature_selection <- function(X)
+lr_feature_selection <- function(X,ignoresamecolprefix = FALSE)
 {
+  #ignoresamecolprefix
+  #above parameter will be used to fix the issue when we create multiple column from a single column.
+  #here there wont be any interaction at all and thusthere is no point of runing that.This will reduce the tiem etaken as well.
+
   #loop through all columns
   cols <- colnames(X)
   ncol <- length(cols)
@@ -65,13 +69,18 @@ lr_feature_selection <- function(X)
       break
     }
     for (j in jstart:colrange){
+      pvalvector <- c(cols[i],cols[j])
       #now run for the two columns and their interaction model and savetheir p values
       frml <- paste(mainfrml,cols[i],'+',cols[j],'+',paste0(cols[i],':',cols[j]))
       lm1 <- glm(as.formula(frml),data=X[,c(i,j,ncol)],family=binomial)
       ab <- summary(lm1)$coefficients
-      pvalvector <- c(cols[i],cols[j])
-      pvalvector <- append(pvalvector,as.vector(ab[c(2:4),4]))
-      interactioncols <-rbind(interactioncols,pvalvector)
+      nr <- nrow(ab)
+      # This is a heck when lr return just 2-3 columns and not all of them.I will fix it later.
+      if (nr ==4)
+      {
+        pvalvector <- append(pvalvector,as.vector(ab[c(2:4),4]))
+        interactioncols <-rbind(interactioncols,pvalvector)
+      }
     }
   }
   list(interactioncols=interactioncols[-1,],singlecols=singlecols[-1,])

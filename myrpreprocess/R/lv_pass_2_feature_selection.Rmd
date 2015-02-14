@@ -2,7 +2,15 @@
 output: word_document
 ---
 ```{r}
+options(warn=-1)
 #load the csv file and provide the name as lv
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
 filename <- 'LendingClub.csv'
 header <- TRUE
 filename
@@ -38,13 +46,13 @@ for (cl in factcols){
   X[,cl] <- as.character(X[,cl])
   cl_vc <- X[,cl]
   X[,cl] <- as.numeric(unlist(lapply(cl_vc,function(vl) ab[ab[,1]==vl,3])))
-  X[,cl] <- ordered(X[,cl], levels = nwlvls)
+  X[,cl] <- factor(X[,cl], levels = nwlvls)
 }
 
 
 # Now convert these columns to factor columns and in fact ordered factor columns
 numcols_to_be_converted <- c(3,8,11,12,13,14,17,18)
-X1 <- convert_num_field_to_ordered_fact_cols(X,numcols_to_be_converted)
+X1 <- convert_num_field_to_ordered_fact_cols(X,numcols_to_be_converted,alpha=0.01)
 X[,numcols_to_be_converted] <- X1
 # see whether new cols are converted to fact columns.
 str(X)
@@ -64,76 +72,66 @@ valid_data <- dt_set$valid_data
 
 
 
-
-merge_lvls <- function(trn,tst,vld,alpha= 0.05)
-{
-X <- trn
-factcols <- findallfactorcols(X)
-print(factcols)
-factcols <- factcols[-1]
-cols <- colnames(X)
-for (cl in factcols)
-{
-  ordlvls <- levels(X[,cl])  
-  numoflvls <- length(ordlvls)
-  while (numoflvls > 2)
-  {
-    print (cols[cl])
-    print(ordlvls)
-    print(cl)
-    
-    ab <- reduce_ord_fact_levels(X[,cl],cls,cols[cl])
-
-    cd <- ab[,4]
-    print(max(cd))
-    ab_max <- which.max(ab[,4])    
-    print(ab_max)
-    print(ab)
-    max_lvls <- ab[ab_max,]
-    print(max_lvls)
-    if (max_lvls[,4] < alpha){
-      print("I am here")
-      break
-    }
-    else{
-      lv2 <- as.numeric(max_lvls$lvl2)
-      lv1 <- as.numeric(max_lvls$lvl1)
-      print(lv2)
-      
-      xcl <- as.numeric(as.character(X[,cl]))
-      xcl[xcl==lv2] <- lv1           
-      X[,cl] <- factor(xcl,levels = ordlvls)
-      
-      # test data set update
-      tcl <- as.numeric(as.character(tst[,cl]))
-      tcl[tcl==lv2] <- lv1           
-      tst[,cl] <- factor(tcl,levels = ordlvls)
-      
-      #valid
-      # test data set update
-      vcl <- as.numeric(as.character(vld[,cl]))
-      vcl[vcl==lv2] <- lv1           
-      vld[,cl] <- factor(vcl,levels = ordlvls)
-      
-      postoremove <- which(as.numeric(ordlvls)==lv2)
-      ordlvls <- ordlvls[-postoremove] 
-      numoflvls <- length(ordlvls)
-    }  
-    
-  }
-}
-list(X,tst,vld)
-}
 train_data <- dt_set$train_data
-td <- merge_lvls(train_data)
+td <- merge_unord_lvls(train_data,test_data,valid_data)
 train_data <- td[[1]]
 test_data <- td[[2]]
 valid_data <- td[[3]]
 
+str(train_data)
 
-write.csv(train_data,'fs_train_data.csv',row.names=FALSE)
-write.csv(train_data,'fs_test_data.csv',row.names=FALSE)
-write.csv(train_data,'fs_validdata.csv',row.names=FALSE)
+#Now make all the factor columns their own columns
+trn_dt <- train_data
+cls <- trn_dt[,clscol]
+trn_dt[,clscol] <- as.data.frame(NULL)
+
+
+tst_cls <- test_data[,clscol]
+test_data[,clscol] <- as.data.frame(NULL)
+
+valid_cls <- valid_data[,clscol] 
+valid_data[,clscol] <- as.data.frame(NULL)
+
+fcl <- findallfactorcols(trn_dt)
+
+for (cl in fcl){
+
+  cols <- colnames(trn_dt)
+  lvls <- levels(trn_dt[,cl])
+  i <- 0
+  for (lvl in lvls){
+    cl_suf <- as.character(lvl)
+    clname <- paste0(cols[cl],'_',as.character(i))
+    trn_dt$cl1 <- as.factor(c(ifelse(trn_dt[,cl]==lvl,1,0)))
+    test_data$cl1 <- as.factor(c(ifelse(test_data[,cl]==lvl,1,0)))
+    valid_data$cl1 <- as.factor(c(ifelse(valid_data[,cl]==lvl,1,0)))
+    cols <- append(cols,clname)
+    colnames(trn_dt) <- cols
+    colnames(test_data) <- cols
+    colnames(valid_data) <- cols
+    i <- i + 1
+  }
+
+}
+colnames(trn_dt)
+
+trn_dt[,fcl] <- as.data.frame(NULL)  
+test_data[,fcl] <- as.data.frame(NULL)  
+valid_data[,fcl] <- as.data.frame(NULL)  
+
+cols <- colnames(trn_dt)
+
+train_data <- cbind(trn_dt,cls)
+test_data <- cbind(test_data,tst_cls)
+valid_data <- cbind(valid_data,valid_cls)
+cols <- append(cols,clscol)
+colnames(train_data ) <- cols
+colnames(test_data ) <- cols
+colnames(valid_data ) <- cols
+clspos <- ncol(train_data)
+write.csv(train_data,'fs_train_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(train_data,'fs_test_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(train_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
 
 #pvals <- reduce_levels_for_unord_fact_cols(X)
 #print(pvals)
@@ -142,7 +140,10 @@ write.csv(train_data,'fs_validdata.csv',row.names=FALSE)
 #pvals <- reduce_levels_for_ord_fact_cols(X)
 #print(pvals)
 
-frml1 <- 'Class ~ .'
+
+
+frml1 <- as.formula('Class ~ .')
+
 # Now run the pass 2 and you will see which features to use.
 # Here k means how many parameters to bring
 # ranking means what ranking to use for random forest. You can pass random forest parameters as well.
@@ -153,5 +154,12 @@ findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=1
 # Analyse the data again and look at minor details and reiterate this process unless you get it right.
 
 # I fyou find better method than this let me know. 
+
+#now try diff models
+frml1 <- as.formula('Class ~  . ')
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+
+tst1 <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+options(warn=0)
 ```
 

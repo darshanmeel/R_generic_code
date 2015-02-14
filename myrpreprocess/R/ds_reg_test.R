@@ -63,3 +63,15 @@ train_rf <- function(frml1,train,test,...)
   test$predprob <- predict(rf,test,type='prob')[,2]
   test
 }
+#
+train_and_predict_random_forest_and_ret_auc <- function(frml1,train,test,clscolpos=NULL,...)
+{
+  if (length(clscolpos) == 0) {
+    clscolpos <- ncol(test)
+  }
+  tf <- train_rf(frml1,train,test,...)
+  roc_of_models(tf$test,clscolpos)
+  #retun model, test data and train data so that you can reduce the size of the moel if needed.
+  list(tf)
+}
+

@@ -13,7 +13,6 @@ generte_train_test_validset <- function(X,test_ratio= 0.3,valid_ratio= NULL)
 {
   # split the data in test and train
   splitdata <- stratifiedshufflesplit(X,test_ratio)
-  print(splitdata)
   test_index <- splitdata$test_index
   test_data <- X[test_index,]
   train_data <- X[splitdata$train_index,]
@@ -23,7 +22,7 @@ generte_train_test_validset <- function(X,test_ratio= 0.3,valid_ratio= NULL)
     if (length(valid_ratio) > 0 )
     {
       print ("we have valid test")
-      print(dim(train_data))
+
       splitdata <- stratifiedshufflesplit(train_data,valid_ratio)
       train_index <- splitdata$train_index
       valid_index <- splitdata$test_index
@@ -42,7 +41,7 @@ generte_train_test_validset <- function(X,test_ratio= 0.3,valid_ratio= NULL)
 shufflesplit <- function(X,test_ratio=0.3)
 {
   nrows <- nrow(X)
-  print(nrows)
+
   tstrows <- nrows*test_ratio
   #print(tstrows)
   allrows <- as.vector(seq(1,nrows))
@@ -51,7 +50,7 @@ shufflesplit <- function(X,test_ratio=0.3)
   test_index_sample <- sample(allrows,tstrows)
   #print (test_index_sample)
   test_index <- allrows[test_index_sample]
-  print(test_index)
+
   train_index <- allrows[-test_index_sample]
   #print (train_index)
   list(train_index=train_index,test_index=test_index)
@@ -65,7 +64,7 @@ stratifiedshufflesplit <-  function (X,test_ratio=0.3)
   classcol <- ncol(X)
   train_index <- as.vector(0)
   test_index <- as.vector(0)
-  print(dim(X))
+
   clslvls <- levels(X[,classcol])
   if (length(clslvls) == 0){
     print ("either the last column is not a class column or if it is a clas column it is not a factor column. Startified sampling need class")
@@ -75,13 +74,13 @@ stratifiedshufflesplit <-  function (X,test_ratio=0.3)
 
     allrows <- as.vector(seq(1,nrows))
     X <- cbind(X,allrows)
-    print (clslvls)
+
     for (cls in clslvls){
 
       df <- X[X[,1]==cls,]
-      print ("i m here 1")
+
       sdata <- shufflesplit(df,test_ratio)
-      print ("i m here 2")
+
       train_index <- append(train_index,df[sdata$train_index,c('allrows')])
       test_index <- append(test_index,df[sdata$test_index,c('allrows')])
     }

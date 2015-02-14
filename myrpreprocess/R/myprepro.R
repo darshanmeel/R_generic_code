@@ -24,19 +24,18 @@ moveclasscolintheend <- function(X,clscolpos)
 #'colclasses <- findclassofcolumns(X)
 findclassofcolumns <- function(X)
 {
-  cls <- sapply(X,class)
+  cls <- lapply(X,class)
   cls
 }
 find_ord_factor_cols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  factorcols <- which(as.data.frame(lapply(allcolclasses,function(cl) ifelse(cl %in% "ordered",TRUE,FALSE)))[1,]==TRUE)
+
+  factorcols <- which(as.data.frame(lapply(X,is.ordered))==TRUE)
   factorcols
 }
 find_unord_factor_cols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  factorcols <- which(allcolclasses %in% "factor")
+  factorcols <- which(as.data.frame(lapply(X,is.factor))==TRUE)
   factorcols
 }
 #'findallfactorcols columns
@@ -45,7 +44,6 @@ findallfactorcols <- function(X)
 {
   ordfactorcols <- find_ord_factor_cols(X)
   unordfactorcols <- find_unord_factor_cols(X)
-
   factorcols <- union(ordfactorcols,unordfactorcols)
   factorcols
 }
@@ -54,8 +52,8 @@ findallfactorcols <- function(X)
 #'numcols <- findallnumcols(X)
 findallnumcols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  numcols <- which(allcolclasses %in% "numeric")
+
+  numcols <- which(as.data.frame(lapply(X,is.numeric))==TRUE)
   numcols
 }
 
@@ -63,8 +61,8 @@ findallnumcols <- function(X)
 #'intcols <- findintcols(X)
 findintcols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  intcols <- which(allcolclasses %in% "integer")
+
+  intcols <- which(as.data.frame(lapply(X,is.integer))==TRUE)
   intcols
 }
 
@@ -72,8 +70,8 @@ findintcols <- function(X)
 #'charcols <- findcharcols(X)
 findcharcols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  charcols <- which(allcolclasses %in% "character")
+
+  charcols <- which(as.data.frame(lapply(X,is.character))==TRUE)
   charcols
 }
 
