@@ -27,13 +27,26 @@ findclassofcolumns <- function(X)
   cls <- sapply(X,class)
   cls
 }
-
+find_ord_factor_cols <- function(X)
+{
+  allcolclasses <- findclassofcolumns(X)
+  factorcols <- which(as.data.frame(lapply(allcolclasses,function(cl) ifelse(cl %in% "ordered",TRUE,FALSE)))[1,]==TRUE)
+  factorcols
+}
+find_unord_factor_cols <- function(X)
+{
+  allcolclasses <- findclassofcolumns(X)
+  factorcols <- which(allcolclasses %in% "factor")
+  factorcols
+}
 #'findallfactorcols columns
 #'factorcols <- findallfactorcols(X)
 findallfactorcols <- function(X)
 {
-  allcolclasses <- findclassofcolumns(X)
-  factorcols <- which(allcolclasses %in% "factor")
+  ordfactorcols <- find_ord_factor_cols(X)
+  unordfactorcols <- find_unord_factor_cols(X)
+
+  factorcols <- union(ordfactorcols,unordfactorcols)
   factorcols
 }
 

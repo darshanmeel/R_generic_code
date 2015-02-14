@@ -93,6 +93,12 @@ prelimprocessing <- function(X,resrows=2,inttonum=TRUE,clscol='Class',timetoview
   print ('done findcorrelation ')
   Sys.sleep(timetovieweachinput)
 
+  #Now find which features are related to each otehr. This is an unsupervised method
+  print ('start check_whether_features_are_related ')
+
+  check_whether_features_are_related(X,alpha=0.5,cor_cutoff=0.3)
+  print ('done check_whether_features_are_related ')
+  Sys.sleep(timetovieweachinput)
   #remove all the factcols which has
   #For all the factor columns check if one of level is too much underrepresented in the data. Cutoff is how much
   # it should be of total data.

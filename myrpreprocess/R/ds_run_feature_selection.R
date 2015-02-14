@@ -29,6 +29,13 @@ findusefulfeatures <- function(X,alpha=0.05,ranking='accuracy',k=20,frml1,...)
   interactioncols <- lr$interactioncols
   interactioncols <- interactioncols[order(interactioncols[,5]),]
   print(interactioncols)
+  # Finally find the columns where the individual factor levels could be independent and thus these could be merged.
+  # These are useful especially when we will need to reduce the levels.
+  pvals <- reduce_levels_for_unord_fact_cols(X)
+  print(pvals)
 
+  # These are used for all the columns which are ordered factor columns
+  pvals <- reduce_levels_for_ordered_fact_cols(X)
+  print(pvals)
 
 }
