@@ -174,7 +174,7 @@ brute_force_lr_interaction_top_only <- function(X,Y,frml1)
   cols <- colnames(X)
   cols <- cols[-length(cols)]
   cols <- unlist(sapply(cols[-length(cols)], function(cl) fc(cols,cl)))
-  cols<- as.vector(cols[sgl1[1:30,1]])
+  cols<- as.vector(cols[sgl1[1:100,1]])
   ncol <- length(cols)
   mainfrml <- frml1
   singlecols <- as.data.frame(t(c(as.numeric(0),as.numeric(0.0))))

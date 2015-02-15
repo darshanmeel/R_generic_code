@@ -61,15 +61,18 @@ rftst <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data
 frml1 <- as.formula('Class ~ .')
 frml1
 rftst <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data,ntree=500)
-# around 0.686
+# around 0.690
 
 frml1 <- "Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + Use.Of.Credit.Line_3 + Loan.Purpose_0 + FICO.Credit.Score_4 + Use.Of.Credit.Line_4 + No..Adverse.Public.Records_0 + Loan.Amount + Total.Number.Of.Credit.Lines_0 + Debt.To.Income.Ratio_0 + FICO.Credit.Score_1 + No..Inquiries.In.Last.6.Months_0 + No..Of.Public.Record.Bankruptcies_0 + Address.State_3 + Address.State_4 + Earliest.Credit.Line.Opened + Home.Ownership_0 + Use.Of.Credit.Line_0 + No..Delinquencies.In.Last.2.Years_0 + Total.Credit.Balance + Loan.Term_1 + Loan.Term_0:FICO.Credit.Score_4 + Annual.Income:Use.Of.Credit.Line_3 + Loan.Term_0:FICO.Credit.Score_0 + Loan.Term_0:Home.Ownership_0 + Loan.Term_0:Use.Of.Credit.Line_0 + Loan.Term_1:FICO.Credit.Score_0 "
 frml1 <- as.formula(frml1)
 frml1
-tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,test_data,predict_type='response')
 
+frml1 <- "Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + Use.Of.Credit.Line_3 + Loan.Purpose_0 + FICO.Credit.Score_4 + Use.Of.Credit.Line_4 + No..Adverse.Public.Records_0 + Loan.Amount + Total.Number.Of.Credit.Lines_0 + Debt.To.Income.Ratio_0 + FICO.Credit.Score_1 + No..Inquiries.In.Last.6.Months_0 + No..Of.Public.Record.Bankruptcies_0 + Address.State_3 + Address.State_4 + Earliest.Credit.Line.Opened + Home.Ownership_0 + Use.Of.Credit.Line_0 + No..Delinquencies.In.Last.2.Years_0 + Total.Credit.Balance + Loan.Term_1 + Annual.Income:No..Adverse.Public.Records_0 + Annual.Income:Use.Of.Credit.Line_1 + Annual.Income:Use.Of.Credit.Line_4 + Loan.Amount:Loan.Term_0 + Loan.Term_0:FICO.Credit.Score_0 + Annual.Income:Use.Of.Credit.Line_3 + Annual.Income:FICO.Credit.Score_0 + Loan.Term_0:Use.Of.Credit.Line_4 + Loan.Term_0:No..Delinquencies.In.Last.2.Years_0 + Loan.Term_0:No..Adverse.Public.Records_0 + Loan.Term_0:FICO.Credit.Score_4 + Annual.Income:FICO.Credit.Score_3 + Loan.Term_0:FICO.Credit.Score_3 + Loan.Term_0:Use.Of.Credit.Line_0 + Loan.Term_0:Debt.To.Income.Ratio_0 + Loan.Term_0:Home.Ownership_0 + Loan.Term_0:Address.State_4 + Loan.Term_1:FICO.Credit.Score_0 "
 
-
+frml1 <- as.formula(frml1)
+frml1
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,test_data,predict_type='response')
 options(warn=0)
 ```
 
