@@ -1,0 +1,75 @@
+---
+output: word_document
+---
+```{r}
+#load the csv file and provide the name as lv
+
+#loadrequiredlibrariesforpreprocessing(TRUE)
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+# Select any file name and class column
+clscol='Class'
+
+# read the train and test data for which we want to remove the features
+
+train_data <- read.csv('fs_train_data.csv')
+test_data <- read.csv('fs_test_data.csv')
+valid_data <- read.csv('fs_validdata.csv')
+clscolpos <- match(clscol,colnames(train_data))
+
+#3,8,11,12,13,14,17,18
+#let us run these one by one but do not run this for the columns we coverted from numeric to fatc cols
+cls <- train_data[,clscolpos]
+
+
+i = factcols[1]
+reduce_ord_fact_levels(train_data[,i],cls,cols[i])
+
+i = factcols[2]
+reduce_ord_fact_levels(train_data[,i],cls,cols[i])
+
+# 2  3  4  6  7  8  9 11 12 13 14 15 17 18 20 21
+
+# factors needs to be changed in valid and test data as well but pass only train_data to find indepedence
+# columns with 2 factors do not do anything. Below process is manual. It can be done automatically. But I wanted to make sure that I do not make any mistakes. Thus doing manually
+# it will be done automatically in future
+cols[,4]
+reduce_unord_fact_levels(train_data[,4],cls,cols[4])
+#rent is independent of all columns excpet Mortgage. Thus change all factors to Rent except Mortgage
+
+train_data[train_data[,4]=='OWN',4] <- 'RENT'
+train_data[train_data[,4]=='OTHER',4] <- 'RENT'
+train_data[train_data[,4]=='NOne',4] <- 'RENT'
+train_data[,4] <- as.factor(as.character(train_data[,4]))
+
+test_data[test_data[,4]=='OWN',4] <- 'RENT'
+test_data[test_data[,4]=='OTHER',4] <- 'RENT'
+test_data[test_data[,4]=='NOne',4] <- 'RENT'
+test_data[,4] <- as.factor(as.character(test_data[,4]))
+
+valid_data[valid_data[,4]=='OWN',4] <- 'RENT'
+valid_data[valid_data[,4]=='OTHER',4] <- 'RENT'
+valid_data[valid_data[,4]=='NOne',4] <- 'RENT'
+valid_data[,4] <- as.factor(as.character(valid_data[,4]))
+
+# here doing manually is a big thing. I will relevel the data using ordered and then we will eliminate one level at a time to be sure.
+#find the number of records for each level and then order them
+reduce_unord_fact_levels(train_data[,6],cls,cols[6])
+
+train_data[train_data[,6]=='Vacation',6] <- 'Car'
+train_data[train_data[,6]=='Wedding',6] <- 'Car'
+train_data[train_data[,6]=='Educationalal',6] <- 'Car'
+
+train_data[train_data[,6]=='Vacation',6] <- 'Car'
+train_data[train_data[,6]=='Wedding',6] <- 'Car'
+train_data[train_data[,6]=='Educationalal',6] <- 'Car'
+
+train_data[,6] <- as.factor(as.character(train_data[,6]))
+
+```
+

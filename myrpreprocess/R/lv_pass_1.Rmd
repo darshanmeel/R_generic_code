@@ -1,0 +1,30 @@
+---
+output: word_document
+---
+```{r}
+#load the csv file and provide the name as lv
+
+#loadrequiredlibrariesforpreprocessing(TRUE)
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+# Select any file name and class column
+filename <- 'LendingClub.csv'
+header <- TRUE
+filename
+
+clscol='Class'
+
+#run prelim processing
+X <- read.csv(file=filename,header=header)
+
+#it might not work with all of data. I have tried with many things and it worked. But you miight need to make some changes.
+
+prelimprocessing(X,clscol=NULL,timetovieweachinput=2,remmissingdatabeforeprocessing=TRUE)
+
+```
+

@@ -1,0 +1,45 @@
+# Data preprocessing and modelling and mining is a ough task and it could be quite time consuming as well especially when your data is not so much separable and standard ML algo doesnt work. However, much tougher than this is getting the data and then preprocessing it.
+The code in this folder are all related once you have a csv or any other format and you can put it in a data frame.
+
+Then it takes from there and does quite a lot of stuff.
+1. Pass_1.rmd. Put your csv file name here as well as specify any class/response variable. It is mainly tested on response variable. I will tweak it if needed to work with regression type continous response variable.
+
+Pass_1 does following for you
+
+# 1. It finds all the missing data in DF as well as in each column
+# 2. Return the str,summary and head outputs.
+# 3. It suggests numeric oclumns which could be converted to factor columns.
+# 4. Find correlation between numeric data
+# 5. Find unusual data e.g. in a factor column one or more values are negligible as compared to others.
+# 6. It then plots the graphs for individual columns and then for a all possible pair of columns.
+# 7. Before generating the graphs it samples the data so that max rows are 10000 as plotting too much data will be time consuming
+# thus the graphs will not be based on full data but a sample of the data but these will give you an idea how your data looks like.
+# 8. quick chi square is not a feature selection method but it will provide you whether the data is quite imbalanced across classes
+# for fatcor columns.
+# Once you are done with this then you can fix some data and run the feature selection as part of featureselections.
+# Fianlly you do your modelling and see how your data looks like.
+
+
+2. Pass_2. Once you have anlayzed the data and you want to fix some of it like removing the misisng data or removing some columns
+and converting some columns to factors either as suggested by pass_1 or as needed as per your requirement.
+
+Now we are ready to find out the pattern in our data which are the columns which are quite useful etc.
+
+# These are some of the methods which you can use to find most useful features. It is for supervised
+# and uses mostly for classification. For regression you can use cor function which is in preprocesiing file
+# and I will later write the linear regression here as well for feature selection.
+
+#WARNING: Make sure that you do feature selection on train data and do not use the full dataset or the test and valid data set for feature selection
+# if you do so the model you will have might be biased.
+
+#Following methods are used here for feature selections
+
+# 1. Chi square independence test
+# 2. Logistic regression(although a modified version of my own)
+# 3. Random forest
+
+# This is not full logistic regression method but It uses logsitic regression on each column and then a combination of two columns as well as
+# Their interaction. You can use this to see which column interaction to use in your model.
+# Run this on small number of columns as it might run in o(Npower 2)
+
+Once you are done with this you can run your modellin either in R or any other tool as you prefer. I will update the modelling part once I will be done with it.

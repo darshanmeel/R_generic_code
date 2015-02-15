@@ -1,0 +1,50 @@
+---
+output: word_document
+---
+```{r}
+# Now we can model the data
+
+
+#loadrequiredlibrariesforpreprocessing(TRUE)
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+
+clscol='SeriousDlqin2yrs'
+
+# read the data which we saved as part of part 2 aka feature selection
+train_data <- read.csv('fs_train_data.csv')
+test_data <- read.csv('fs_test_data.csv')
+valid_data <- read.csv('fs_validdata.csv')
+
+
+# Now you can apply any model . For this taks an djust to show importance of interaction terms i ill be using log reg
+
+# I am not running any model excet the Logistic regression. I had ran plain random forest and I got around 0.82 AUC with just 500 trees without. 
+# This is just to show how interaction terms can be used in the model like regressions. However these interaction columns can give more details
+# like 
+# Let us model a normal logistic regression. Check the performance on valid_dt and if needed calibrate parameters. 
+# Once model is ready try finally on test_data. Also, do not change anything after that even that is bad. If test performance is bad. Regenerate the train, test and valid and try samething over and again.
+
+# run very basic model. It will giev around 0.68 AUC value
+frml1 <- 'SeriousDlqin2yrs ~ .'
+train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+
+# Let us see if some of these features are important. I used all those which had p value less than 0.05.
+# some of these fields are highly correlated I have not taken that into account it is just to show how to use interaction terms obtained from custom log reg for feature selection.
+# found some features from random forest but interaction terms are from logistic regression. You can add more terms and then run step to reduce the size of the model.
+# it gav earound 0.80. Try adding otehrs and working on removing some of the columns.
+frml1 <- 'SeriousDlqin2yrs ~ NumberOfTimes90DaysLate *NumberOfOpenCreditLinesAndLoans + NumberOfTime60.89DaysPastDueNotWorse*NumberOfTimes90DaysLate + MonthlyIncome*NumberOfDependents + RevolvingUtilizationOfUnsecuredLines + NumberOfTime60.89DaysPastDueNotWorse + DebtRatio + NumberOfTime30.59DaysPastDueNotWorse * NumberOfOpenCreditLinesAndLoans + NumberRealEstateLoansOrLines +  age*NumberOfDependents + age*DebtRatio +
+DebtRatio *NumberRealEstateLoansOrLines + DebtRatio *NumberOfTime60.89DaysPastDueNotWorse + age *MonthlyIncome +  age*NumberRealEstateLoansOrLines + age *NumberOfOpenCreditLinesAndLoans + NumberOfOpenCreditLinesAndLoans*NumberOfDependents + X*NumberOfTime60.89DaysPastDueNotWorse + NumberOfTime30.59DaysPastDueNotWorse*DebtRatio + NumberOfTime30.59DaysPastDueNotWorse*NumberOfOpenCreditLinesAndLoans + NumberOfTime30.59DaysPastDueNotWorse*NumberOfTimes90DaysLate + NumberOfTime30.59DaysPastDueNotWorse*NumberOfTime60.89DaysPastDueNotWorse
++ NumberOfOpenCreditLinesAndLoans*NumberOfTimes90DaysLate + NumberOfTimes90DaysLate*NumberOfTime60.89DaysPastDueNotWorse + NumberRealEstateLoansOrLines*NumberOfDependents + age*NumberOfTime60.89DaysPastDueNotWorse + MonthlyIncome*NumberRealEstateLoansOrLinesMonthlyIncome*NumberRealEstateLoansOrLines + NumberOfTime30.59DaysPastDueNotWorse*DebtRatio'
+
+train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+step(train_data)
+```
+
+
+```
