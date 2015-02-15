@@ -55,12 +55,8 @@ relevelfactorcols <- function(X)
   #find all factor columns
   factorcols <- findallfactorcols(X)
   print (factorcols)
-  if (length(factorcols)> 0){
-    #Relevel the columns
-    X <- convertfacttochar(X)
-    X <- convertchartofact(X)
-  }
-
+  #Relevel the columns
+  X[,factorcols] <- lapply(X[,factorcols], function(cl) as.factor(as.character(cl)))
   X
 }
 
@@ -126,10 +122,7 @@ convertchartofact <- function(X){
 }
 convertfacttochar <- function(X){
   factcols <- findallfactorcols(X)
-  if (length(factcols) >0){
-    X[,factcols] <- lapply(X[,factcols],function(x) as.character(x))
-  }
-
+  X[,factcols] <- lapply(X[,factcols],function(x) as.character(x))
   X
 }
 convertchartonum <- function(X){
