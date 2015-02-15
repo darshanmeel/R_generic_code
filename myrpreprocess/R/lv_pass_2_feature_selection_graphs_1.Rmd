@@ -49,12 +49,10 @@ for (cl in factcols){
   X[,cl] <- factor(X[,cl], levels = nwlvls)
 }
 
-
-# Now convert these columns to factor columns and in fact ordered factor columns
+#convert some num cols to factor columns as ordered factor columns
 numcols_to_be_converted <- c(3,8,11,12,13,14,17,18)
-X1 <- convert_num_field_to_ordered_fact_cols(X,numcols_to_be_converted,alpha=0.05)
-X[,numcols_to_be_converted] <- X1
-# see whether new cols are converted to fact columns.
+X[,numcols_to_be_converted ] <- lapply(X[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
+
 str(X)
 # Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
 #valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
@@ -63,16 +61,25 @@ train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
 
-#write the train_data,test_data and valid_data now to file. Use this in 3rd step of modelling.
-#however, you can split them again but make sure that the feature selection part is run once or if you want to repeat it on same data
-#to be honest :) .
 
+# see whether new cols are converted to fact columns.
+str(X)
 
-# Now remove the test and valid data
+#Now merege the ordered lvl data
 
-
-
+#train_data <- dt_set$train_data
 train_data <- dt_set$train_data
+test_data <- dt_set$test_data
+valid_data <- dt_set$valid_data
+td <- merge_ord_lvls(train_data,test_data,valid_data)
+train_data <- td[[1]]
+test_data <- td[[2]]
+valid_data <- td[[3]]
+
+dim(train_data)
+str(train_data)
+# Now merge all unordered data
+#train_data <- dt_set$train_data
 td <- merge_unord_lvls(train_data,test_data,valid_data)
 train_data <- td[[1]]
 test_data <- td[[2]]
@@ -137,6 +144,12 @@ write.csv(valid_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
 #Generate graph. It might take long time s there are 120 columns and thus could belots of graphs
 
 plotvariousgraphs(train_data,individualplots=TRUE,crossplot=TRUE,byfactcols=FALSE,plotall=FALSE,clscol=clscol,timetovieweachinput=0)
+
+#
+# Now run the pass 2 and you will see which features to use.
+# Here k means how many parameters to bring
+# ranking means what ranking to use for random forest. You can pass random forest parameters as well.
+findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
 
 options(warn=0)
 ```

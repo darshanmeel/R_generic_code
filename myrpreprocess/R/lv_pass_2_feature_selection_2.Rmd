@@ -17,6 +17,7 @@ clscol='Class'
 train_data <- read.csv('fs_train_data.csv',stringsAsFactors=TRUE)
 test_data <- read.csv('fs_test_data.csv',stringsAsFactors=TRUE)
 valid_data <- read.csv('fs_validdata.csv',stringsAsFactors=TRUE)
+
 train_data[,seq(6,ncol(train_data))] <- lapply(train_data[,seq(6,ncol(train_data))] ,as.factor)
 test_data[,seq(6,ncol(train_data))] <- lapply(test_data[,seq(6,ncol(train_data))] ,as.factor)
 valid_data[,seq(6,ncol(train_data))] <- lapply(valid_data[,seq(6,ncol(train_data))] ,as.factor)
@@ -47,10 +48,26 @@ frml1 <- as.formula('Class ~ .')
 # Now run the pass 2 and you will see which features to use.
 # Here k means how many parameters to bring
 # ranking means what ranking to use for random forest. You can pass random forest parameters as well.
-findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
+#findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
 
+frml1 <- 'Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + Use.Of.Credit.Line_3 + Loan.Purpose_0 + FICO.Credit.Score_4 + Use.Of.Credit.Line_4 + No..Adverse.Public.Records_0 + Loan.Amount + Total.Number.Of.Credit.Lines_0 + Debt.To.Income.Ratio_0 + FICO.Credit.Score_1 + No..Inquiries.In.Last.6.Months_0 + No..Of.Public.Record.Bankruptcies_0 + Address.State_3 + Address.State_4 + Earliest.Credit.Line.Opened + Home.Ownership_0 + Use.Of.Credit.Line_0 + No..Delinquencies.In.Last.2.Years_0 + Total.Credit.Balance + Loan.Term_1'
 frml1 <- as.formula(frml1)
+frml1
 tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+# aroudn 0.70
+#check random forest
+rftst <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data,ntree=500)
+# around 0.686
+frml1 <- as.formula('Class ~ .')
+frml1
+rftst <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data,ntree=500)
+# around 0.686
+
+frml1 <- "Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + Use.Of.Credit.Line_3 + Loan.Purpose_0 + FICO.Credit.Score_4 + Use.Of.Credit.Line_4 + No..Adverse.Public.Records_0 + Loan.Amount + Total.Number.Of.Credit.Lines_0 + Debt.To.Income.Ratio_0 + FICO.Credit.Score_1 + No..Inquiries.In.Last.6.Months_0 + No..Of.Public.Record.Bankruptcies_0 + Address.State_3 + Address.State_4 + Earliest.Credit.Line.Opened + Home.Ownership_0 + Use.Of.Credit.Line_0 + No..Delinquencies.In.Last.2.Years_0 + Total.Credit.Balance + Loan.Term_1 + Loan.Term_0:FICO.Credit.Score_4 + Annual.Income:Use.Of.Credit.Line_3 + Loan.Term_0:FICO.Credit.Score_0 + Loan.Term_0:Home.Ownership_0 + Loan.Term_0:Use.Of.Credit.Line_0 + Loan.Term_1:FICO.Credit.Score_0 "
+frml1 <- as.formula(frml1)
+frml1
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+
 
 
 options(warn=0)

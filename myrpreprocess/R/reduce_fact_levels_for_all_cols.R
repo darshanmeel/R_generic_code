@@ -190,3 +190,74 @@ merge_unord_lvls <- function(trn,tst,vld,alpha= 0.01)
   }
   list(X,tst,vld)
 }
+
+
+#
+
+merge_ord_lvls <- function(trn,tst,vld,alpha= 0.01)
+{
+  X <- trn
+  cls <- X[,ncol(X)]
+  print(head(cls))
+
+  factcols <- find_ord_factor_cols(X)
+
+  print(factcols)
+  factcols <- factcols
+  cols <- colnames(X)
+  for (cl in factcols)
+  {
+    ordlvls <- levels(X[,cl])
+    numoflvls <- length(ordlvls)
+    while (numoflvls > 2)
+    {
+      print (cols[cl])
+      print(ordlvls)
+      print(cl)
+      ab <- reduce_ord_fact_levels(X[,cl],cls,cols[cl])
+
+      cd <- ab[,4]
+
+      print(max(cd))
+      ab_max <- which.max(ab[,4])
+      print(ab_max)
+      max_lvls <- ab[ab_max,]
+      #print(max_lvls)
+      if (max_lvls[,4] < alpha){
+        break
+      }
+      else{
+        lv2 <- as.numeric(max_lvls$lvl2)
+        lv1 <- as.numeric(max_lvls$lvl1)
+        print(lv2)
+
+        xcl <- as.numeric(as.character(X[,cl]))
+        xcl[xcl==lv2] <- lv1
+
+
+        # test data set update
+        tcl <- as.numeric(as.character(tst[,cl]))
+        tcl[tcl==lv2] <- lv1
+
+
+        #valid
+        # test data set update
+        vcl <- as.numeric(as.character(vld[,cl]))
+        vcl[vcl==lv2] <- lv1
+
+
+        postoremove <- which(as.numeric(ordlvls)==lv2)
+        ordlvls <- ordlvls[-postoremove]
+
+        X[,cl] <- factor(xcl,levels = ordlvls)
+        tst[,cl] <- factor(tcl,levels = ordlvls)
+        vld[,cl] <- factor(vcl,levels = ordlvls)
+
+        numoflvls <- length(ordlvls)
+      }
+    }
+
+  }
+  list(X,tst,vld)
+}
+
