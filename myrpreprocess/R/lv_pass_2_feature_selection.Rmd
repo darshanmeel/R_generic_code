@@ -4,7 +4,7 @@ output: word_document
 ```{r}
 options(warn=-1)
 #load the csv file and provide the name as lv
-setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+setwd('C:\\Users\\WIN 8.1\\Documents\\GitHub\\R_generic_code\\myrpreprocess\\R')
 library(ggplot2)
 library(discretization)
 library(randomForest)
@@ -58,7 +58,7 @@ X[,numcols_to_be_converted] <- X1
 str(X)
 # Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
 #valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
-dt_set <- generte_train_test_validset(X,test_ratio=0.3,valid_ratio=0.3)
+dt_set <- generte_train_test_validset(X,test_ratio=0.3,valid_ratio=0.1)
 train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
@@ -178,12 +178,15 @@ frml1
 tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
 
 frml1 <- 'Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + FICO.Credit.Score_1 + Loan.Purpose_0 + No..Inquiries.In.Last.6.Months_2 + FICO.Credit.Score_6 + Address.State_0 + Use.Of.Credit.Line_14 + Use.Of.Credit.Line_13 + No..Adverse.Public.Records_0 + Employment.Length_1 + Loan.Application.Description + Use.Of.Credit.Line_2 + Debt.To.Income.Ratio_1 + Use.Of.Credit.Line_4 + Total.Number.Of.Credit.Lines_1 + Total.Number.Of.Credit.Lines_0 + Earliest.Credit.Line.Opened + No..Inquiries.In.Last.6.Months_0 + Months.Since.Last.Delinquency_6 + Debt.To.Income.Ratio_0 + Total.Number.Of.Credit.Lines_12 + FICO.Credit.Score_2 + Months.Since.Last.Delinquency_4 + No..Inquiries.In.Last.6.Months_1 + Use.Of.Credit.Line_7 + Employment.Length_0 + Use.Of.Credit.Line_9 + No..Of.Public.Record.Bankruptcies_0 + Total.Number.Of.Credit.Lines_3 + No..Of.Credit.Lines_5 + No..Of.Credit.Lines_7 + Total.Number.Of.Credit.Lines_14 + Total.Number.Of.Credit.Lines_10 + Total.Number.Of.Credit.Lines_6 + Total.Number.Of.Credit.Lines_5 + No..Of.Credit.Lines_9 + No..Of.Credit.Lines_2 + Total.Number.Of.Credit.Lines_7 + Total.Number.Of.Credit.Lines_2 + Total.Number.Of.Credit.Lines_9 + Total.Credit.Balance + No..Of.Credit.Lines_3 + Months.Since.Last.Delinquency_2 + No..Of.Credit.Lines_4 + Total.Number.Of.Credit.Lines_11 + Months.Since.Last.Delinquency_10 + Months.Since.Last.Delinquency_1 + No..Of.Public.Record.Bankruptcies_1'
-
+frml1 <- as.formula('Class ~ .')
 frml1
 frml1 <- as.formula(frml1)
 frml1
 tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
 
+frml1
+rftst <- train_and_predict_random_forest_and_ret_auc(frml1,train_data,valid_data,ntree=500)
+# around 0.690
 options(warn=0)
 ```
 

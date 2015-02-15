@@ -166,7 +166,7 @@ brute_force_lr_interaction_one_pass <- function(X,Y,frml1)
   list(singlecols=singlecols)
 }
 frml1 <- 'Class ~ '
-sgl <- brute_force_lr_interaction_one_pass(train_data,valid_data,frml1)
+#sgl <- brute_force_lr_interaction_one_pass(train_data,valid_data,frml1)
 #once you haveselected top interaction terms. Thenrun these here along with our formula for all individual columns and see if these increase the auc any more.
 brute_force_lr_interaction_top_only <- function(X,Y,frml1)
 {
@@ -227,4 +227,4 @@ brute_force_lr_interaction_top_only <- function(X,Y,frml1)
 
 #brute_force_lr(train_data,valid_data)
 frml1 <- 'Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + Use.Of.Credit.Line_3 + Loan.Purpose_0 + FICO.Credit.Score_4 + Use.Of.Credit.Line_4 + No..Adverse.Public.Records_0 + Loan.Amount + Total.Number.Of.Credit.Lines_0 + Debt.To.Income.Ratio_0 + FICO.Credit.Score_1 + No..Inquiries.In.Last.6.Months_0 + No..Of.Public.Record.Bankruptcies_0 + Address.State_3 + Address.State_4 + Earliest.Credit.Line.Opened + Home.Ownership_0 + Use.Of.Credit.Line_0 + No..Delinquencies.In.Last.2.Years_0 + Total.Credit.Balance + Loan.Term_1 +'
-sgl5 <- brute_force_lr_interaction_top_only(train_data,valid_data,frml1)
+#sgl5 <- brute_force_lr_interaction_top_only(train_data,valid_data,frml1)

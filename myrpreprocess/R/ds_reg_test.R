@@ -45,15 +45,14 @@ roc_of_models <- function(test,clscolpos)
       stop("More than 2 levels.ROC works with only 2 levels")
     }
     pred <- prediction(test[,(clscolpos+1)], test[,clscolpos])
-    #perf1 <- performance(pred, "prec", "rec")
-    #plot(perf1)
-    #perf1 <- performance(pred, "sens", "spec")
-    #plot(perf1)
+
+    rocperf <- performance(pred, "sens", "spec")
+    plot(rocperf)
     auc <- performance(pred,"auc")
+    print (performance(pred))
     auc <- unlist(slot(auc, "y.values"))
     print (auc)
-    #perf <- performance(pred,"tpr","fpr")
-    #plot(perf)
+
     list(auc=auc)
 }
 

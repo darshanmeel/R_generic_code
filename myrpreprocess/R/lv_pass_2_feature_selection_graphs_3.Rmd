@@ -1,0 +1,74 @@
+---
+output: word_document
+---
+```{r}
+options(warn=-1)
+#load the csv file and provide the name as lv
+setwd('C:\\Users\\WIN 8.1\\Documents\\GitHub\\R_generic_code\\myrpreprocess\\R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+filename <- 'LendingClub.csv'
+header <- TRUE
+filename
+
+clscol='Class'
+
+#run prelim processing
+X <- read.csv(file=filename,header=header)
+clscolpos <- match(clscol,colnames(X))
+X <- X[complete.cases(X),]
+X <- moveclasscolintheend(X,clscolpos)
+X[,clscolpos] <- as.character(X[,clscolpos])
+
+X[X[,clscolpos]=='Creditworthy',clscolpos] <- '0'
+X[X[,clscolpos]=='Uncreditworthy',clscolpos] <- '1'
+X[,clscolpos] <- as.factor(as.numeric(X[,clscol]))
+
+
+#convert some num cols to factor columns as ordered factor columns
+#numcols_to_be_converted <- c(3,8,11,12,13,14,17,18)
+#X[,numcols_to_be_converted ] <- lapply(X[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
+
+str(X)
+# Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
+#valid ratio 0.3 means it will be 30 % of data remaning after test_ratio has been splitted. so if test_ratio is 0.3 and valid_ratio is 0.3  valid data will be (1-0.3)*0.3 i.e. 0.21 of total data passed
+dt_set <- generte_train_test_validset(X,test_ratio=0.3,valid_ratio=0.1)
+train_data <- dt_set$train_data
+test_data <- dt_set$test_data
+valid_data <- dt_set$valid_data
+
+
+frml1 <- as.formula('Class ~ .')
+frml1
+frml1 <- as.formula(frml1)
+frml1
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+
+frml1 <- as.formula('Class ~ .')
+frml1
+frml1 <- as.formula(frml1)
+frml1
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,test_data,predict_type='response')
+
+
+write.csv(train_data,'fs_train_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(test_data,'fs_test_data.csv',row.names=FALSE,quote=TRUE)
+write.csv(valid_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
+
+#Generate graph. It might take long time s there are 120 columns and thus could belots of graphs
+
+#plotvariousgraphs(train_data,individualplots=TRUE,crossplot=TRUE,byfactcols=FALSE,plotall=FALSE,clscol=clscol,timetovieweachinput=0)
+
+#
+# Now run the pass 2 and you will see which features to use.
+# Here k means how many parameters to bring
+# ranking means what ranking to use for random forest. You can pass random forest parameters as well.
+#findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
+
+options(warn=0)
+```
+
