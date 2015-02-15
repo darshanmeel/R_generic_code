@@ -126,6 +126,7 @@ colnames(train_data ) <- cols
 colnames(test_data ) <- cols
 colnames(valid_data ) <- cols
 clspos <- ncol(train_data)
+
 #write.csv(train_data,'fs_train_data.csv',row.names=FALSE,quote=TRUE)
 #write.csv(train_data,'fs_test_data.csv',row.names=FALSE,quote=TRUE)
 #write.csv(train_data,'fs_validdata.csv',row.names=FALSE,quote=TRUE)
@@ -157,21 +158,31 @@ findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=1
 train_data$No..Of.Credit.Lines_8 <- NULL
 train_data$Total.Number.Of.Credit.Lines_13 <- NULL
 train_data$Months.Since.Last.Delinquency_12 <- NULL
+train_data$Months.Since.Last.Delinquency_11 <- NULL
 
 valid_data$No..Of.Credit.Lines_8 <- NULL
 valid_data$Total.Number.Of.Credit.Lines_13 <- NULL
 valid_data$Months.Since.Last.Delinquency_12 <- NULL
-frml1 <- as.formula('Class ~  . ')
-tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+valid_data$Months.Since.Last.Delinquency_11 <- NULL
 
-frml1 <- 'Class ~ . + Loan.Amount:Use.Of.Credit.Line_2 + Loan.Amount:Use.Of.Credit.Line_3 + Loan.Amount:Use.Of.Credit.Line_4 + Loan.Amount:No..Of.Credit.Lines_3 + Loan.Amount:Home.Ownership_0 + Annual.Income:Employment.Length_0 + Annual.Income:Debt.To.Income.Ratio_0  + Loan.Amount:FICO.Credit.Score_4 + Loan.Amount:FICO.Credit.Score_5 + Loan.Amount:FICO.Credit.Score_6 + Months.Since.Last.Delinquency_1:Annual.Income + No..Inquiries.In.Last.6.Months_1:Annual.Income + No..Inquiries.In.Last.6.Months_1:Annual.Income + Months.Since.Last.Delinquency_8:Annual.Income + Use.Of.Credit.Line_0:Annual.Income + Use.Of.Credit.Line_1:Annual.Income + Use.Of.Credit.Line_3:Annual.Income + Use.Of.Credit.Line_7:Annual.Income + Loan.Amount*Loan.Term_0 + Loan.Amount:Loan.Term_1 + Annual.Income:Loan.Term_0 + Annual.Income:Loan.Term_1 + Loan.Amount:Loan.Purpose_1 + Loan.Amount:Loan.Purpose_2 + Annual.Income:Loan.Purpose_1 + Annual.Income:Loan.Purpose_0 + Annual.Income:Address.State_3 + No..Delinquencies.In.Last.2.Years_1:Annual.Income + Earliest.Credit.Line.Opened:Use.Of.Credit.Line_3 + Use.Of.Credit.Line_10:Earliest.Credit.Line.Opened + Total.Credit.Balance:FICO.Credit.Score_6 + Months.Since.Last.Delinquency_9:Total.Credit.Balance + Total.Credit.Balance:FICO.Credit.Score_6 + Total.Credit.Balance:No..Of.Credit.Lines_3 +  Total.Credit.Balance:No..Of.Credit.Lines_6 +  Total.Credit.Balance:No..Of.Credit.Lines_4 +  Total.Credit.Balance:Loan.Purpose_0 +  Total.Credit.Balance:Loan.Purpose_1 + Loan.Application.Description:Address.State_1  + Employment.Length_2:No..Delinquencies.In.Last.2.Years_0'
-#frml1 <- 'Class ~ .'
+
+test_data$No..Of.Credit.Lines_8 <- NULL
+test_data$Total.Number.Of.Credit.Lines_13 <- NULL
+test_data$Months.Since.Last.Delinquency_12 <- NULL
+test_data$Months.Since.Last.Delinquency_11 <- NULL
+
+frml1 <- 'Class ~ .'
 frml1
 frml1 <- as.formula(frml1)
 frml1
 tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
-#step_m <- step(summary(tst[[1]][[2]][[1]]))
 
+frml1 <- 'Class ~ Loan.Term_0 + Annual.Income + FICO.Credit.Score_0 + FICO.Credit.Score_1 + Loan.Purpose_0 + No..Inquiries.In.Last.6.Months_2 + FICO.Credit.Score_6 + Address.State_0 + Use.Of.Credit.Line_14 + Use.Of.Credit.Line_13 + No..Adverse.Public.Records_0 + Employment.Length_1 + Loan.Application.Description + Use.Of.Credit.Line_2 + Debt.To.Income.Ratio_1 + Use.Of.Credit.Line_4 + Total.Number.Of.Credit.Lines_1 + Total.Number.Of.Credit.Lines_0 + Earliest.Credit.Line.Opened + No..Inquiries.In.Last.6.Months_0 + Months.Since.Last.Delinquency_6 + Debt.To.Income.Ratio_0 + Total.Number.Of.Credit.Lines_12 + FICO.Credit.Score_2 + Months.Since.Last.Delinquency_4 + No..Inquiries.In.Last.6.Months_1 + Use.Of.Credit.Line_7 + Employment.Length_0 + Use.Of.Credit.Line_9 + No..Of.Public.Record.Bankruptcies_0 + Total.Number.Of.Credit.Lines_3 + No..Of.Credit.Lines_5 + No..Of.Credit.Lines_7 + Total.Number.Of.Credit.Lines_14 + Total.Number.Of.Credit.Lines_10 + Total.Number.Of.Credit.Lines_6 + Total.Number.Of.Credit.Lines_5 + No..Of.Credit.Lines_9 + No..Of.Credit.Lines_2 + Total.Number.Of.Credit.Lines_7 + Total.Number.Of.Credit.Lines_2 + Total.Number.Of.Credit.Lines_9 + Total.Credit.Balance + No..Of.Credit.Lines_3 + Months.Since.Last.Delinquency_2 + No..Of.Credit.Lines_4 + Total.Number.Of.Credit.Lines_11 + Months.Since.Last.Delinquency_10 + Months.Since.Last.Delinquency_1 + No..Of.Public.Record.Bankruptcies_1'
+
+frml1
+frml1 <- as.formula(frml1)
+frml1
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
 
 options(warn=0)
 ```

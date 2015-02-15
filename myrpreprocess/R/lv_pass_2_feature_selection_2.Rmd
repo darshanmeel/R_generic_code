@@ -1,0 +1,58 @@
+---
+output: word_document
+---
+```{r}
+options(warn=-1)
+#load the csv file and provide the name as lv
+setwd('/Users/dsing001/myr/R_generic_code/myrpreprocess/R')
+library(ggplot2)
+library(discretization)
+library(randomForest)
+library(ROCR)
+library(myrpreprocess)
+library(unbalanced)
+
+clscol='Class'
+
+train_data <- read.csv('fs_train_data.csv',stringsAsFactors=TRUE)
+test_data <- read.csv('fs_test_data.csv',stringsAsFactors=TRUE)
+valid_data <- read.csv('fs_validdata.csv',stringsAsFactors=TRUE)
+train_data[,seq(6,ncol(train_data))] <- lapply(train_data[,seq(6,ncol(train_data))] ,as.factor)
+test_data[,seq(6,ncol(train_data))] <- lapply(test_data[,seq(6,ncol(train_data))] ,as.factor)
+valid_data[,seq(6,ncol(train_data))] <- lapply(valid_data[,seq(6,ncol(train_data))] ,as.factor)
+
+#remove all the columns which has factor levels 1
+
+#remove columns No of credit line as it is correlated t Total number of credit line
+cols <- colnames(train_data)
+ab <- sapply(cols,function(x) {
+  x <- as.character(x)
+  x <- substr(x,1,nchar(x)-1)
+
+  ifelse(x=='No..Of.Credit.Lines_',TRUE,FALSE)
+  }
+  )
+clrm <- cols[ab]
+train_data[,clrm] <- as.data.frame(c(NULL)) 
+test_data[,clrm] <- as.data.frame(c(NULL)) 
+valid_data[,clrm] <- as.data.frame(c(NULL)) 
+cols <- colnames(train_data)
+clrm <- cols[sapply(train_data, function(x) ifelse(length(levels(x)) ==1,TRUE,FALSE))]
+train_data[,clrm] <- as.data.frame(c(NULL)) 
+test_data[,clrm] <- as.data.frame(c(NULL)) 
+valid_data[,clrm] <- as.data.frame(c(NULL)) 
+
+frml1 <- as.formula('Class ~ .')
+
+# Now run the pass 2 and you will see which features to use.
+# Here k means how many parameters to bring
+# ranking means what ranking to use for random forest. You can pass random forest parameters as well.
+findusefulfeatures(train_data,alpha = 0.05,ranking='accuracy',k=20,frml1,ntree=10)
+
+frml1 <- as.formula(frml1)
+tst <-train_and_predict_log_reg_and_ret_auc(frml1,train_data,valid_data,predict_type='response')
+
+
+options(warn=0)
+```
+
