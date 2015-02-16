@@ -99,18 +99,23 @@ merge_lvls <- function(trn,tst,vld,alpha= 0.01)
   print(factcols)
   factcols <- factcols[-1]
   cols <- colnames(X)
+  ord=FALSE
   for (cl in factcols)
   {
     ordlvls <- levels(X[,cl])
     numoflvls <- length(ordlvls)
+    print (str(X))
+    ord=is.ordered(X[,cl])
     while (numoflvls > 2)
     {
       print (cols[cl])
       print(ordlvls)
       print(cl)
-      if (is.ordered(X))
+      print (is.ordered(X[,cl]))
+      if (ord)
       {
         print ('ordered')
+
         ab <- reduce_ord_fact_levels(X[,cl],cls,cols[cl])
       }
       else
@@ -153,6 +158,12 @@ merge_lvls <- function(trn,tst,vld,alpha= 0.01)
 
         numoflvls <- length(ordlvls)
       }
+    }
+    if (ord)
+    {
+      X[,cl] <- ordered(X[,cl])
+      tst[,cl] <- ordered(tst[,cl])
+      vld[,cl] <- ordered(vld[,cl])
     }
 
   }

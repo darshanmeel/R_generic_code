@@ -51,7 +51,7 @@ for (cl in factcols){
 
 #convert some num cols to factor columns as ordered factor columns
 numcols_to_be_converted <- c(3,8,11,12,13,14,17,18)
-X[,numcols_to_be_converted ] <- lapply(X[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
+X[,numcols_to_be_converted ] <- lapply(t[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
 
 str(X)
 # Now break the data into 3 parts, train data, test data and valid data as feature selection should always be done on train data and never on test and valid data.
@@ -61,7 +61,12 @@ train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
 
+numcols_to_be_converted <- c(3,8,11,12,13,14,17,18)
+train_data[,numcols_to_be_converted ] <- lapply(train_data[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
 
+test_data[,numcols_to_be_converted ] <- lapply(test_data[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
+
+valid_data[,numcols_to_be_converted ] <- lapply(valid_data[,numcols_to_be_converted], function(cl) as.ordered(round(cl)))
 # see whether new cols are converted to fact columns.
 str(X)
 
@@ -71,7 +76,7 @@ str(X)
 train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
-td <- merge_lvls(train_data,test_data,valid_data)
+td <- merge_lvls(train_data,test_data,valid_data,alpha=0.05)
 train_data <- td[[1]]
 test_data <- td[[2]]
 valid_data <- td[[3]]
