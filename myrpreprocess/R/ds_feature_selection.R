@@ -83,6 +83,10 @@ lr_feature_selection <- function(X,ignoresamecolprefix = FALSE)
       }
     }
   }
+  interactioncols<- subset(interactioncols,interaction_pvalue !='NaN' & interaction_pvalue != 'NA')
+  interactioncols$interaction_pvalue <- as.numeric(as.character(interactioncols$interaction_pvalue))
+  singlecols<- subset(singlecols,pvalue !='NaN' & pvalue != 'NA')
+  singlecols$pvalue <- as.numeric(as.character(singlecols$pvalue))
   list(interactioncols=interactioncols[-1,],singlecols=singlecols[-1,])
 }
 
@@ -113,11 +117,13 @@ rf_feature_selection <- function(X,frml,k=10,ranking='accuracy',...)
     print(clvls)
     ordercol <- which(clvls %in% ranking)
   }
+  print(str(imp))
   imp_ordered <- imp[order(imp[,ordercol],decreasing=TRUE),]
   nr <- nrow(imp_ordered)
   if (k>nr){
     k <- nr
   }
+
   list(feature_rank = rownames(imp_ordered[1:k,]),imp_ordered=imp_ordered)
 
 }

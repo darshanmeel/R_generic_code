@@ -33,19 +33,22 @@ find_ord_factor_cols <- function(X)
   factorcols <- which(as.data.frame(lapply(X,is.ordered))==TRUE)
   factorcols
 }
+#This method is only to return factor columns but only unordered facto columns
 find_unord_factor_cols <- function(X)
 {
-  factorcols <- which(as.data.frame(lapply(X,is.factor))==TRUE)
+  ordfactorcols <- find_ord_factor_cols(X)
+  factorcols <- findallfactorcols(X)
+  factorcols <- setdiff(factorcols,ordfactorcols)
   factorcols
 }
 #'findallfactorcols columns
 #'factorcols <- findallfactorcols(X)
 findallfactorcols <- function(X)
 {
-  ordfactorcols <- find_ord_factor_cols(X)
-  unordfactorcols <- find_unord_factor_cols(X)
-  factorcols <- union(ordfactorcols,unordfactorcols)
+  factorcols <- which(as.data.frame(lapply(X,is.factor))==TRUE)
   factorcols
+
+
 }
 
 #'findallnumcols columns

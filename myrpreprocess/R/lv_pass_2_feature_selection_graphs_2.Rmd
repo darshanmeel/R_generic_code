@@ -71,7 +71,7 @@ str(X)
 train_data <- dt_set$train_data
 test_data <- dt_set$test_data
 valid_data <- dt_set$valid_data
-td <- merge_ord_lvls(train_data,test_data,valid_data)
+td <- merge_lvls(train_data,test_data,valid_data)
 train_data <- td[[1]]
 test_data <- td[[2]]
 valid_data <- td[[3]]
@@ -80,7 +80,7 @@ dim(train_data)
 str(train_data)
 # Now merge all unordered data
 #train_data <- dt_set$train_data
-td <- merge_unord_lvls(train_data,test_data,valid_data)
+td <- merge_lvls(train_data,test_data,valid_data)
 train_data <- td[[1]]
 test_data <- td[[2]]
 valid_data <- td[[3]]
